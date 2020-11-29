@@ -26,3 +26,12 @@ data = pd.read_csv('data/abalone.data', names=names,na_values=missing_values)
 #print(data.tail)
 print(data.shape)
 
+#I'll split the data here since both of the questions needs same type of it.
+
+from sklearn.model_selection import train_test_split
+
+data = data.sample(frac=1, random_state=42) #mixing database for more random sample
+
+def tt(X,y, sample):
+    X_train, X_valid, y_train, y_valid = train_test_split(X, y, train_size=sample,  random_state=1) #for calling from
+    return [X_train, X_valid, y_train, y_valid] #TODO: Add Keywords
