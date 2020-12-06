@@ -22,8 +22,9 @@ from naive_bayes import NaiveBayes
 
 nb = NaiveBayes()
 
-nb.fit(d_1["X_train"],d_1["y_train"])
-print(d_1["X_valid"])
-L = nb.predict(d_1["X_valid"])
+L = nb.predict(d_1["X_valid"],d_1["X_train"],d_1["y_train"])
+#we need to calculate accuracy
 
-print(L)
+acc = nb.accuracy(L,d_1["y_valid"])
+
+print(acc)

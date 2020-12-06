@@ -43,22 +43,37 @@ class NaiveBayes:
             condt = np.sum(np.log(self._pdf(val, x))) #get log to prevent overflow
             posterior = prior + condt
             posteriors.append(posterior)
-
-        # return class with highest posterior probability
         return self._classes[np.argmax(posteriors)] #argmax to find highest posterior probability
 
-    def _pdf(self, class_val, x):
+    def _pdf(self, class_val, x): #class cond. probability second part
         mean = self._means[class_val] #get mean of the class
         var = self._var[class_val]
         numerator = np.exp(-(x-mean)**2 / (2 * var))
         denominator = np.sqrt(2 * np.pi * var)
         return numerator / denominator
 
-    def predict(self, X):
-        y_pred = [self.train(x) for (column,x) in X.iteritems()]
+    def separate(self,X): #separate by class
+        sep = dict()
+        for index, val in enumerate(X):
+            i = X[val]
+            if (index not in sep):
+                sep[index] = list()
+            sep[index].append(i)
+        return sep
 
-        #TODO: error : ValueError: operands could not be broadcast together with shapes (4077,) (7,)
+    def predict(self, X, fit_x, fit_y):
+        #separated = self.separate(X)
+        self.fit(fit_x, fit_y)
+        y_pred = [self.train(x) for col,x in X.iterrows()]
 
         return np.array(y_pred)
+
+        #TODO: 0.0 Accuracy ?? Check Train again
+    def accuracy(self, prediction, y_valid):
+        tot = 0
+        for val, i in enumerate(y_valid):
+            if i == prediction[val]:
+                tot +=1
+        return tot / float(len(y_valid))
 
 
