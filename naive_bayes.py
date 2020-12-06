@@ -16,7 +16,7 @@ class NaiveBayes:
             X_c = X[val] #the class has labels
             means[c, :] = X_c.mean(axis=0) #means
             var[c, :] = X_c.var(axis=0) #variences
-            pri[c] = X_c.shape[0] / float(i_val) #frequency of class
+            pri[c] = X_c.shape[0] / float(i_val) #frequency of class, prior probability
 
        #which the values actually stated in the data files as ;
 
@@ -27,11 +27,38 @@ class NaiveBayes:
        # SD	0.120	0.099	0.042	0.490	0.222	0.110	0.139	3.224
        # Correl	0.557	0.575	0.557	0.540	0.421	0.504	0.628	  1.0
 
-    def train(self): #usage of train
-                    #magic happens ?
-        pass
+        #determining the variables which we will need outside of the fit function
 
-    def predict(self):
-                    #last one
-        pass
+        self._classes = classes
+        self._pri = pri
+        self._means = means
+        self._var = var
+
+    def train(self, x):
+        posteriors = []
+
+        # calculate posterior probability for each class
+        for val, c in enumerate(self._classes):
+            prior = np.log(self._pri[val])
+            condt = np.sum(np.log(self._pdf(val, x))) #get log to prevent overflow
+            posterior = prior + condt
+            posteriors.append(posterior)
+
+        # return class with highest posterior probability
+        return self._classes[np.argmax(posteriors)] #argmax to find highest posterior probability
+
+    def _pdf(self, class_val, x):
+        mean = self._means[class_val] #get mean of the class
+        var = self._var[class_val]
+        numerator = np.exp(-(x-mean)**2 / (2 * var))
+        denominator = np.sqrt(2 * np.pi * var)
+        return numerator / denominator
+
+    def predict(self, X):
+        y_pred = [self.train(x) for (column,x) in X.iteritems()]
+
+        #TODO: error : ValueError: operands could not be broadcast together with shapes (4077,) (7,)
+
+        return np.array(y_pred)
+
 
