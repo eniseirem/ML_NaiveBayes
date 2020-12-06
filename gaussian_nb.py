@@ -12,8 +12,9 @@ df= pre.data
 #print(df.tail)
 
 X = df.iloc[:,1:-1] #continous
-y = df['Rings'] # +1.5 gives the age
+y = df["Rings"]
 
+#print(df.tail)
 d_1=pre.tt(X,y,100) #first case
 d_2=pre.tt(X,y,1000) #second case
 
@@ -26,5 +27,6 @@ L = nb.predict(d_1["X_valid"],d_1["X_train"],d_1["y_train"])
 #we need to calculate accuracy
 
 acc = nb.accuracy(L,d_1["y_valid"])
+
 
 print(acc)

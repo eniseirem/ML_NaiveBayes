@@ -33,6 +33,25 @@ from sklearn.model_selection import train_test_split
 
 data = data.sample(frac=1, random_state=42) #mixing database for more random sample
 
+#let's label the data with its ages according to
+#output: class label
+#(less than 8 in age belongs to class 1 (young), between 8 and 12 to class 2 (middle-aged), greater than 12 to class 3 (old))
+#rings +1.5 gives the age so lets update the data accordingly
+
+import math
+
+col_name='Rings'
+conditions = [
+    data[col_name] <  8- float(1.5), #adding 1,5 will give the age so doing like that will work as well
+    data[col_name].between(6.5,(12-1.5)),
+    12-1.5 < data[col_name]
+
+]
+labels = ["young","middle-aged","old"]
+
+#data['age']=np.select(conditions,labels)
+
+
 def tt(X,y, sample):
     X_train, X_valid, y_train, y_valid = train_test_split(X, y, train_size=sample,  random_state=1) #for calling from
 

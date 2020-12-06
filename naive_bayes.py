@@ -43,11 +43,11 @@ class NaiveBayes:
             condt = np.sum(np.log(self._pdf(val, x))) #get log to prevent overflow
             posterior = prior + condt
             posteriors.append(posterior)
-        return self._classes[np.argmax(posteriors)] #argmax to find highest posterior probability
+        return np.argmax(posteriors) #argmax to find highest posterior probability
 
     def _pdf(self, class_val, x): #class cond. probability second part
-        mean = self._means[class_val] #get mean of the class
-        var = self._var[class_val]
+        mean = self._means[class_val][0] #get mean of the class
+        var = self._var[class_val][0]
         numerator = np.exp(-(x-mean)**2 / (2 * var))
         denominator = np.sqrt(2 * np.pi * var)
         return numerator / denominator
@@ -64,13 +64,35 @@ class NaiveBayes:
     def predict(self, X, fit_x, fit_y):
         #separated = self.separate(X)
         self.fit(fit_x, fit_y)
-        y_pred = [self.train(x) for col,x in X.iterrows()]
-
+        y_pred = [self.train(x) for idx, x in X.iterrows()]
+        y_pred = [self.labels(x) for x in y_pred]
         return np.array(y_pred)
 
-        #TODO: 0.0 Accuracy ?? Check Train again
+    def predict2(self, X, fit_x, fit_y):
+        separated = self.separate(X)
+        self.fit(fit_x, fit_y)
+        y_pred = [self.train(x) for x in separated]
+        y_pred = [self.labels(x) for x in y_pred]
+        return np.array(y_pred)
+
+    def labels(self,predict_df):
+        data = predict_df
+        conditions = [
+            data < 8 - float(1.5),  # adding 1,5 will give the age so doing like that will work as well
+            6.5 <= data & data <= (12 - 1.5),
+            12 - 1.5 < data
+
+        ]
+        labels = ["young", "middle-aged", "old"]
+
+        data = np.select(conditions, labels)
+
+        return data
+
+
     def accuracy(self, prediction, y_valid):
         tot = 0
+        y_valid=[self.labels(x) for x in y_valid]
         for val, i in enumerate(y_valid):
             if i == prediction[val]:
                 tot +=1
