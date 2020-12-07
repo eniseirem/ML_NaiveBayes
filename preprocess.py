@@ -52,6 +52,7 @@ labels = ["young","middle-aged","old"]
 #data['age']=np.select(conditions,labels)
 
 
+
 def tt(X,y, sample):
     X_train, X_valid, y_train, y_valid = train_test_split(X, y, train_size=sample,  random_state=1) #for calling from
 
