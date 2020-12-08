@@ -23,7 +23,7 @@ from naive_bayes import NaiveBayes
 
 nb = NaiveBayes()
 
-L = nb.predict_gau(d_2["X_valid"],d_2["X_train"],d_2["y_train"])
+L = nb.predict_gau(d_1["X_valid"],d_1["X_train"],d_1["y_train"])
 #we need to calculate accuracy
 
 acc = nb.accuracy(L,d_1["y_valid"])

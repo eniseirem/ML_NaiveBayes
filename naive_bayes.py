@@ -69,13 +69,15 @@ class NaiveBayes:
         #separated = self.separate(X)
         self.fit(fit_x, fit_y)
         y_pred = [self.train(x) for idx, x in X.iterrows()]
+        print(y_pred)
         y_pred = [self.labels(x) for x in y_pred]
         return np.array(y_pred)
 
     def labels(self,predict_df):
         data = predict_df
+
         conditions = [
-            data < 8 - float(1.5),  # adding 1,5 will give the age so doing like that will work as well
+            data < 6.5,  # adding 1,5 will give the age so doing like that will work as well
             6.5 <= data & data <= (12 - 1.5),
             12 - 1.5 < data
 
@@ -91,7 +93,7 @@ class NaiveBayes:
         tot = 0
         y_valid=[self.labels(x) for x in y_valid] #labelling because we are trying to classify them, it is not important to have exact same result
         for val, i in enumerate(y_valid):
-            print(val,i, prediction[val])
+            #print(val,i, prediction[val])
             if i == prediction[val]:
                 tot +=1
         return tot / float(len(y_valid))
