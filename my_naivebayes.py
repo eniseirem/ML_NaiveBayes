@@ -7,7 +7,7 @@ import pandas as pd
 class NaiveBayes:
     def fit(self, X, y): #this will be fitting the training. Splitted dataset to X data matrice and y target column.
         i_val, i_fea =X.shape
-        classes = y.unique()
+        classes = y.unique() #our class labels
         i_classes = len(classes) #find the lenght to fit in
         X = self.separate(X,y)
 
@@ -47,15 +47,17 @@ class NaiveBayes:
         self._keys = keys
 
     def separate(self,X,y): #separate by class
-        sep = dict()
+        #this function will group the data with its labels and its features.
+        sep = {}
         idx = 0
         for key, val in X.iterrows():
-            class_idx = y.iloc[idx]
+            class_idx = y.iloc[idx] #getting the labels
             if (class_idx not in sep):
                 sep[class_idx] = list()
             sep[class_idx].append(val)
             idx = idx +1
         return sep
+
 
     def accuracy(self, prediction, y_valid):
         tot = 0
@@ -66,7 +68,7 @@ class NaiveBayes:
 
 
     def gaussian_dist(self,class_val,x):
-        class_val = self._labs[class_val]
+        class_val = self._labs[class_val] #getting the integer type of labels
         mean = self._means[class_val]
         stdev = self._stdev[class_val]
         res = np.exp(-((x - mean) ** 2 / (2 * stdev ** 2)))
@@ -76,7 +78,7 @@ class NaiveBayes:
     def train_gau(self, x):
         posteriors = []
 
-        # calculate posterior probability for each class
+        # calculate posterior probability for each labels
         for val, c in enumerate(self._classes):
             prior = np.log(self._pri[val])
             condt = np.sum(np.log(self.gaussian_dist(c, x))) #get log to prevent overflow
