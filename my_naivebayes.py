@@ -46,24 +46,6 @@ class NaiveBayes:
         self._labs = labels
         self._keys = keys
 
-    def train(self, x):
-        posteriors = []
-
-        # calculate posterior probability for each class
-        for val, c in enumerate(self._classes):
-            prior = np.log(self._pri[val])
-            condt = np.sum(np.log(self._pdf(val, x))) #get log to prevent overflow
-            posterior = prior + condt
-            posteriors.append(posterior)
-        return np.argmax(posteriors) #argmax to find highest posterior probability
-
-    def _pdf(self, class_val, x): #class cond. probability second part
-        mean = self._means[class_val][0] #get mean of the class
-        var = self._var[class_val][0]
-        numerator = np.exp(-(x-mean)**2 / (2 * var))
-        denominator = np.sqrt(2 * np.pi * var)
-        return numerator / denominator
-
     def separate(self,X,y): #separate by class
         sep = dict()
         idx = 0
@@ -74,30 +56,6 @@ class NaiveBayes:
             sep[class_idx].append(val)
             idx = idx +1
         return sep
-
-    def predict(self, X, fit_x, fit_y):
-        #separated = self.separate(X)
-        self.fit(fit_x, fit_y)
-        y_pred = [self.train(x) for idx, x in X.iterrows()]
-        print(y_pred)
-        y_pred = [self.labels(x) for x in y_pred]
-        return np.array(y_pred)
-
-    def labels(self,predict_df):
-        data = predict_df
-
-        conditions = [
-            data < 6.5,  # adding 1,5 will give the age so doing like that will work as well
-            6.5 <= data & data <= (12 - 1.5),
-            12 - 1.5 < data
-
-        ]
-        labels = ["young", "middle-aged", "old"]
-
-        data = np.select(conditions, labels)
-
-        return data
-
 
     def accuracy(self, prediction, y_valid):
         tot = 0
@@ -127,7 +85,6 @@ class NaiveBayes:
         return np.argmax(posteriors) #argmax to find highest posterior probability
 
     def predict_gau(self, X, fit_x, fit_y):
-        #separated = self.separate(X)
         self.fit(fit_x, fit_y)
         y_pred = [self.train_gau(x) for idx, x in X.iterrows()]
         y_pred_labelled = [self._keys.get(x) for x in y_pred] #labelling with strings

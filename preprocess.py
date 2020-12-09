@@ -49,7 +49,8 @@ conditions = [
 ]
 labels = ["young","middle-aged","old"]
 
-#data['age']=np.select(conditions,labels)
+data['age']=np.select(conditions,labels)
+data.drop("Rings", axis=1, inplace=True)
 
 
 
